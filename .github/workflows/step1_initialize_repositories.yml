@@ -77,14 +77,17 @@ jobs:
 
       - name: Verify Git Repository Forks
         env:
-          GH_ORG: ${{ github.repository_owner }}
+          ORGANIZATION: ${{ github.repository_owner }}
         run: |
-          echo "Forking the needed repositories into organization ${GH_ORG}"
+          echo "Forking the needed repositories into organization ${ORGANIZATION}"
           # skipping bookverse-demo-init as this should already be forked to run this action
           for item in ${COMPONENTS}; do
-            if gh repo view "${GH_ORG}/bookverse-${item}" >/dev/null 2>&1; then
-              echo "${GH_ORG}/bookverse-${item} already exists"
+            echo "gh repo view ${ORGANIZATION}/bookverse-${item}"
+            if gh repo view "${ORGANIZATION}/bookverse-${item}" >/dev/null 2>&1; then
+              echo "result: $?"
+              echo "Repository ${ORGANIZATION}/bookverse-${item} has already been forked."
             else
+              echo "result: $?"
               gh repo fork bookverse-example/bookverse-${item} --fork-name bookverse-${item}
             fi
           done
